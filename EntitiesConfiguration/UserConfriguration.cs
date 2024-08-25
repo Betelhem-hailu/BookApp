@@ -21,7 +21,8 @@ namespace BookStore.EntitiesConfiguration
         
             // Configure the ProfileImageUrl property
             builder.Property(x => x.ProfileImageUrl)
-                .HasColumnType("NVARCHAR");
+                .HasColumnType("NVARCHAR")
+                .IsRequired(false);
 
             // Configure the one-to-many relationship with Orders
         // builder

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using BookStore.Models;
 
-namespace BookStore.AppDataContext
+namespace BookStore.Context
 {
     //BookDbContext class inherits from DbContext
     public class BookDbContext: DbContext
