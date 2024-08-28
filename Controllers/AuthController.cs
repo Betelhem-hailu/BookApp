@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
         bool valid = _authService.RegisterUser(user);
         
         if (!valid) {
-            return StatusCode(500, new {message = "Email already exists"});
+            return StatusCode(409, new {message = "Email already exists"});
         }
          // Assign roles to the user
         _authService.AssignRoleToUser(user.UserId, model.Role);

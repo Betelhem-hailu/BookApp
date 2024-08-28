@@ -11,8 +11,8 @@ public static class ServiceExtensions
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("CorsPolicy",
-                builder => builder.AllowAnyOrigin()
+           options.AddPolicy("AllowReactApp",
+                builder => builder.WithOrigins("http://localhost:3000")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());

@@ -76,6 +76,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseCors("AllowReactApp");
 app.UseAuthentication(); // Ensure authentication is added
 app.UseAuthorization();  // Ensure authorization is added
 
