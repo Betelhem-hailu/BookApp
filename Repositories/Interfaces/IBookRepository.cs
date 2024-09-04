@@ -9,5 +9,8 @@ public interface IBookRepository
     Task<IEnumerable<Book>> GetAllAsync(CancellationToken cancellationToken);
     Task<IEnumerable<Book>> GetBooksByCategoryAsync(string category, CancellationToken cancellationToken);
     Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    Task UpdateAsync(Book book, CancellationToken cancellationToken);
+    Task DeleteAsync(Book book, CancellationToken cancellationToken);
 }
 }

@@ -188,6 +188,101 @@ public async Task<Response> GetByIdAsync(Guid id, CancellationToken cancellation
     }
 
 }
+
+//Update book
+public async Task<Response> UpdateBookAsync(Guid id, UpdateBookRequest updateBookDto, CancellationToken cancellationToken)
+{
+    try
+    {
+        var book = await _bookRepository.GetByIdAsync(id, cancellationToken);
+
+        if (book == null)
+        {
+            return new Response("Book not found", 404);
+        }
+
+        // Update the book properties
+        book.Title = updateBookDto.Title;
+        book.Author = updateBookDto.Author;
+        book.Description = updateBookDto.Description;
+        book.Price = updateBookDto.Price;
+        book.ISBN = updateBookDto.ISBN;
+
+        // Handle cover image update
+        if (updateBookDto.ImageFile != null && updateBookDto.ImageFile.Length > 0)
+        {
+            // Upload the image to Cloudinary (or any cloud storage service)
+            PhotoUploadResult uploadResult = await _imageService.UploadImageAsync(updateBookDto.ImageFile);
+
+            if (uploadResult == null)
+            {
+                return new Response("Failed to upload the cover image", 500);
+            }
+
+            // Update the CoverImageUrl property with the new image URL
+            book.CoverImageUrl = uploadResult.PhotoUrl;
+        }
+        else if (!string.IsNullOrEmpty(updateBookDto.ImageUrl))
+        {
+            // If no new image is uploaded but a URL is provided, use the existing URL
+            book.CoverImageUrl = updateBookDto.ImageUrl;
+        }
+
+        // Handle category updates
+        if (updateBookDto.Categories != null && updateBookDto.Categories.Any())
+        {
+            book.Categories.Clear(); // Clear current categories
+
+            foreach (var categoryName in updateBookDto.Categories)
+            {
+                var category = await _categoryRepository.GetCategoryByNameAsync(categoryName, cancellationToken);
+
+                if (category == null)
+                {
+                    category = new Category { Name = categoryName };
+                    category = await _categoryRepository.AddCategoryAsync(category, cancellationToken);
+                }
+
+                book.Categories.Add(category);
+            }
+        }
+
+
+        // Save changes to the database
+        await _bookRepository.UpdateAsync(book, cancellationToken);
+
+        var updatedBookDto = _mapper.Map<BookResponseDTO>(book);
+        return new Response("Book updated successfully", 200, updatedBookDto);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (optional)
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+}
+
+//delete book by Id
+public async Task<Response> DeleteBookAsync(Guid id, CancellationToken cancellationToken)
+{
+    var book = await _bookRepository.GetByIdAsync(id, cancellationToken);
+
+    if (book == null)
+    {
+        return new Response("Book not found", 404);
+    }
+
+    try
+    {
+        await _bookRepository.DeleteAsync(book, cancellationToken);
+        return new Response("Book deleted successfully", 200);
+    }
+    catch (Exception ex)
+    {
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+}
+
+
 }
 }
 

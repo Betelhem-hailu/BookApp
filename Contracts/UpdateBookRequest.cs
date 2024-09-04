@@ -18,10 +18,20 @@ public class UpdateBookRequest
     [Required]
     public decimal Price { get; set; }
 
+    [Required]
     [StringLength(20)]
     public string ISBN { get; set; }
 
+    public string Language {get; set;}
+
     [Required]
-    public IFormFile? CoverImageUrl { get; set; }
+    public DateTime PublishDate {get; set;}
+
+    // [Required]
+    public IFormFile? ImageFile { get; set; }  // For the new image file (nullable)
+
+    public string? ImageUrl { get; set; }  // For keeping the existing URL if no new image is provided
+
+    public List<string> Categories { get; set; }
 }
 }

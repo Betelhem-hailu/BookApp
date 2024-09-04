@@ -73,4 +73,19 @@ public class BookRepository : IBookRepository
                         .Include(b => b.Categories)
                         .FirstOrDefaultAsync(b => b.BookId == id, cancellationToken);
     }
+
+    //Update Book
+    public async Task UpdateAsync(Book book, CancellationToken cancellationToken)
+    {
+        _context.Books.Update(book);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    //delete book
+    public async Task DeleteAsync(Book book, CancellationToken cancellationToken)
+    {
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync(cancellationToken);   
+    }
+
 }

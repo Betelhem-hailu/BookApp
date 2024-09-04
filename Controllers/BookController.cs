@@ -77,17 +77,34 @@ public class BooksController : ControllerBase
 
     [HttpPut("{id:guid}")]
     [Authorize(Policy = "AdminOnly")]
-    public IActionResult EditBook()
+    public async Task<IActionResult> UpdateBook(Guid id, [FromForm] UpdateBookRequest updateBookDto, CancellationToken cancellationToken)
     {
-        // This route is protected and can only be accessed by users with the "Admin" role
-        return Ok("Admin content");
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var response = await _bookService.UpdateBookAsync(id, updateBookDto, cancellationToken);
+
+        if (response.Status == 409) return Conflict(response);
+        if (response.Status == 400) return BadRequest(response);
+        if (response.Status == 500) return StatusCode(500, response);
+
+            return Ok(response);
     }
+
 
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "AdminOnly")]
-    public IActionResult DeleteBook()
+    public async Task<IActionResult> DeleteBook(Guid id, CancellationToken cancellationToken)
     {
-        // This route is protected and can only be accessed by users with the "Admin" role
-        return Ok("Admin content");
+        var response = await _bookService.DeleteBookAsync(id, cancellationToken);
+
+        if (response.Status == 200) return Ok(response);
+        if (response.Status == 404) return NotFound(response);
+        else
+        {
+            return StatusCode(500, response);
+        }
     }
 }
