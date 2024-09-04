@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
         var token = _authService.GenerateToken(user);
         SetTokenCookie(token);
 
-        return Ok(new {message = "user loggedin"});
+        return Ok(new {message = "user loggedIn"});
     }
 
     [HttpPost("register")]

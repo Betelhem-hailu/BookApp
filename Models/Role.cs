@@ -9,3 +9,8 @@ public class Role
         Name = name;
     }
 }
+
+// command for database migrate and update for list of migrations
+// dotnet ef migrations add add_desc_lang_date_onBooks
+//  dotnet ef database update <MigrationName>
+// dotnet ef migrations list

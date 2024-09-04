@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
 using BookStore.Validators;
+using BookStore.Infrastructure;
 
 namespace BookStore.Extensions {
 public static class ServiceExtensions
@@ -90,6 +91,11 @@ public static class ServiceExtensions
     public static void ConfigureValidation(this IServiceCollection services)
     {
         services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UserValidator>());
+    }
+
+    public static void ConfigureCloudinary(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
     }
 }
 }

@@ -5,11 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using BookStore.Extensions;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using BookStore.Mapping;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 var configuration = builder.Configuration;
+
+services.AddLogging(builder => builder.AddConsole());
+builder.Services.AddAutoMapper(typeof(BookMapper));
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -59,6 +64,8 @@ ServiceExtensions.ConfigureJwtAuthentication(services, configuration);
 ServiceExtensions.ConfigureAuthorizationPolicies(services);
 services.ConfigureRepositories();
 services.ConfigureBusinessServices();
+ServiceExtensions.ConfigureCloudinary(services, configuration);
+
 
 var app = builder.Build();
 

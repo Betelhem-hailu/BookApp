@@ -18,10 +18,16 @@ namespace BookStore.EntitiesConfiguration
                 .HasMaxLength(200)
                 .IsRequired();
             
-            builder.Property(b => b.Title)
+            builder.Property(b => b.Author)
                 .HasColumnName("Author")
                 .HasColumnType("NVARCHAR")
                 .HasMaxLength(200)
+                .IsRequired();
+
+            builder.Property(b => b.Description)
+                .HasColumnName("Description")
+                .HasColumnType("NVARCHAR")
+                .HasMaxLength(500)
                 .IsRequired();
 
             // Configure the Price property
