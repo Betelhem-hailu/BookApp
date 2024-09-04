@@ -24,5 +24,10 @@ namespace BookStore.Repositories{
             await _context.SaveChangesAsync(cancellationToken);
             return category;
         }
+
+        public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Categories.ToListAsync(cancellationToken);
+        }
     }
 }

@@ -4,6 +4,10 @@ public interface IBookRepository
 {
     Task<Book> AddNewBook(Book request);
     Task<Book?> GetBookByISBNAsync(string ISBN, CancellationToken cancellationToken);
-    Task<bool> AnyAsync(string ISBN, CancellationToken cancelationToken);
+    Task<bool> AnyAsync(string ISBN, CancellationToken cancellationToken);
+
+    Task<IEnumerable<Book>> GetAllAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<Book>> GetBooksByCategoryAsync(string category, CancellationToken cancellationToken);
+    Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }
 }

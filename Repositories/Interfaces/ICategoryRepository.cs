@@ -3,5 +3,6 @@ namespace BookStore.Repositories.Interfaces {
 {
     Task<Category> GetCategoryByNameAsync(string name, CancellationToken cancellationToken);
     Task<Category> AddCategoryAsync(Category category, CancellationToken cancellationToken);
+    Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken);
 }
 }

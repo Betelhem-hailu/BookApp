@@ -99,7 +99,95 @@ namespace BookStore.Services
 
     }
 
-    }    
+    //Retrieve list of all books
+    public async Task<Response> GetAllAsync(CancellationToken cancellationToken)
+    {
+    try
+    {
+        var books = await _bookRepository.GetAllAsync(cancellationToken);
+        var bookDtos = _mapper.Map<IEnumerable<BookResponseDTO>>(books);
 
+        return new Response("Books retrieved successfully", 200, bookDtos);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (optional)
+        // _logger.LogError(ex, "An error occurred while retrieving books.");
+
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+
+    }
+
+    //Retrieve list of Books by Category
+    public async Task<Response> GetByCategoryAsync(string category, CancellationToken cancellationToken)
+{
+    try
+    {
+        var books = await _bookRepository.GetBooksByCategoryAsync(category, cancellationToken);
+
+        if (!books.Any())
+        {
+            return new Response("No books found for the specified category", 404);
+        }
+
+        var bookDtos = _mapper.Map<IEnumerable<BookResponseDTO>>(books);
+        return new Response("Books retrieved successfully", 200, bookDtos);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (optional)
+        // _logger.LogError(ex, "An error occurred while retrieving books by category.");
+
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+}
+    
+
+    //Retrieve list of categories
+public async Task<Response> GetAllCategoriesAsync(CancellationToken cancellationToken)
+{
+    try
+    {
+        var categories = await _categoryRepository.GetAllAsync(cancellationToken);
+
+        if (!categories.Any())
+        {
+            return new Response("No categories found", 404);
+        }
+
+        var categoryDtos = _mapper.Map<IEnumerable<CategoryResponseDTO>>(categories);
+        return new Response("Categories retrieved successfully", 200, categoryDtos);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (optional)
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+}
+
+//Retrieve book by ID 
+public async Task<Response> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+{
+    try
+    {
+        var book = await _bookRepository.GetByIdAsync(id, cancellationToken);
+
+        if (book == null)
+        {
+            return new Response("Book not found", 404);
+        }
+
+        var bookDto = _mapper.Map<BookResponseDTO>(book);
+        return new Response("Book retrieved successfully", 200, bookDto);
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (optional)
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+
+}
+}
 }
 

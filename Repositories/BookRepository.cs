@@ -49,4 +49,28 @@ public class BookRepository : IBookRepository
                 throw new Exception("An error occurred while creating the book item.");
             }
     }
+
+    //Get list of books from database
+    public async Task<IEnumerable<Book>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _context.Books.ToListAsync(cancellationToken);
+    }
+
+    //Get list of Books by category
+    public async Task<IEnumerable<Book>> GetBooksByCategoryAsync(string category, CancellationToken cancellationToken)
+    {
+        // Assuming you're using Entity Framework or similar ORM
+        return await _context.Books
+                        .Where(b => b.Categories
+                                    .Any(c => c.Name == category))
+                        .ToListAsync(cancellationToken);
+    }
+
+    //Get Book by Id
+    public async Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.Books
+                        .Include(b => b.Categories)
+                        .FirstOrDefaultAsync(b => b.BookId == id, cancellationToken);
+    }
 }

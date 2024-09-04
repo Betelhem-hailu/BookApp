@@ -12,10 +12,12 @@ namespace BookStore.Mapping
             CreateMap<CreateBookRequest, Book>()
             .ForMember(dest => dest.BookId, opt => opt.Ignore()); 
 
-            CreateMap<Book, BookResponseDTO>();          
+            CreateMap<Book, BookResponseDTO>();
 
             CreateMap<UpdateBookRequest, Book>()
             .ForMember(dest => dest.BookId, opt => opt.Ignore());
+
+            CreateMap<Category, CategoryResponseDTO>();
         }
     }
 }

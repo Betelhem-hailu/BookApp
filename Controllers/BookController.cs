@@ -14,48 +14,53 @@ public class BooksController : ControllerBase
         _bookService = bookService;
     }
 
-    // [HttpGet]
-    // public IActionResult GetListOfBooks()
-    // {
-    //     try
-    //         {
-    //             var book = await _bookService.GetAllAsync();
-    //             if (book == null || !book.Any())
-    //             {
-    //                 return Ok(new { message = "No Book Items  found" });
-    //             }
-    //             return Ok(new { message = "Successfully retrieved all book posts", data = book });
+    [HttpGet]
+    public async Task<IActionResult> GetListOfBooks(CancellationToken cancellation)
+    {
+        var response = await _bookService.GetAllAsync(cancellation);
+            if (response.Status == 500) return StatusCode(500, response);
 
-    //         }
-    //         catch (Exception ex)
-    //         {
-    //             return StatusCode(500, new { message = "An error occurred while retrieving all book it posts", error = ex.Message });
+            return Ok(response);
+    }
 
+    [HttpGet("category/{category}")]
+    public async Task<IActionResult> GetBooksByCategory(string category, CancellationToken cancellationToken)
+    {
+        var response = await _bookService.GetByCategoryAsync(category, cancellationToken);
 
-    //         }
-    //     return Ok("Customer content");
-    // }
-    // [HttpGet("{id:guid}")]
-    // public IActionResult GetBook()
-    // {
-    //      try
-    //         {
-    //             var book = await _bookServices.GetAllAsync();
-    //             if (book == null || !book.Any())
-    //             {
-    //                 return Ok(new { message = "No Book Items  found" });
-    //             }
-    //             return Ok(new { message = "Successfully retrieved all book posts", data = book });
+        if (response.Status == 200) return Ok(response);
+        if (response.Status == 404) return NotFound(response);
+        else
+        {
+            return StatusCode(500, response);
+        }
+    }
 
-    //         }
-    //         catch (Exception ex)
-    //         {
-    //             return StatusCode(500, new { message = "An error occurred while retrieving all book it posts", error = ex.Message });
+    [HttpGet("categories")]
+    public async Task<IActionResult> GetAllCategories(CancellationToken cancellationToken)
+    {
+        var response = await _bookService.GetAllCategoriesAsync(cancellationToken);
+
+        if (response.Status == 200) return Ok(response);
+        if (response.Status == 404) return NotFound(response);
+        else
+        {
+            return StatusCode(500, response);
+        }
+    }
 
 
-    //         }
-    //     return Ok("Customer content");
-    // }
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetBook(Guid id, CancellationToken cancellationToken)
+    {
+        var response = await _bookService.GetByIdAsync(id, cancellationToken);
+        if (response.Status == 200) return Ok(response);
+        if (response.Status == 404) return NotFound(response);
+        else
+        {
+            return StatusCode(500, response);
+        }
+    }
 
     [HttpPost]
     [Authorize(Policy = "AdminOnly")]
