@@ -120,11 +120,12 @@ namespace BookStore.Services
     }
 
     //Retrieve list of Books by Category
-    public async Task<Response> GetByCategoryAsync(string category, CancellationToken cancellationToken)
+    public async Task<Response> GetByCategoryAsync(List<string> categories, CancellationToken cancellationToken)
 {
     try
     {
-        var books = await _bookRepository.GetBooksByCategoryAsync(category, cancellationToken);
+         _logger.LogInformation("on service "+ string.Join(", ", categories));
+        var books = await _bookRepository.GetBooksByCategoryAsync(categories, cancellationToken);
 
         if (!books.Any())
         {
@@ -281,6 +282,28 @@ public async Task<Response> DeleteBookAsync(Guid id, CancellationToken cancellat
         return new Response($"An error occurred: {ex.Message}", 500);
     }
 }
+
+// Search books by title or author
+public async Task<Response> SearchBooksAsync(string searchTerm, CancellationToken cancellationToken)
+{
+    try
+    {
+        var books = await _bookRepository.SearchBooksAsync(searchTerm, cancellationToken);
+
+        if (!books.Any())
+        {
+            return new Response("No books found for the specified search term", 404);
+        }
+
+        var bookDtos = _mapper.Map<IEnumerable<BookResponseDTO>>(books);
+        return new Response("Books retrieved successfully", 200, bookDtos);
+    }
+    catch (Exception ex)
+    {
+        return new Response($"An error occurred: {ex.Message}", 500);
+    }
+}
+
 
 
 }

@@ -12,7 +12,8 @@ namespace BookStore.Mapping
             CreateMap<CreateBookRequest, Book>()
             .ForMember(dest => dest.BookId, opt => opt.Ignore()); 
 
-            CreateMap<Book, BookResponseDTO>();
+            CreateMap<Book, BookResponseDTO>()
+            .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Categories.Select(c => c.Name)));
 
             CreateMap<UpdateBookRequest, Book>()
             .ForMember(dest => dest.BookId, opt => opt.Ignore());

@@ -1,7 +1,9 @@
+using BookStore.DTOs;
+
 namespace BookStore.DTOs {
-     public class BookResponseDTO
+    public class BookResponseDTO
     {
-        public Guid Id { get; set; }
+        public Guid BookId { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public string Description {get; set;}
@@ -10,5 +12,6 @@ namespace BookStore.DTOs {
         public string Language {get; set;}
         public DateTime PublishDate {get; set;}
         public string CoverImageUrl { get; set; } 
-    }
+        public List<string> Categories { get; set; }
+}
 }

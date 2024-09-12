@@ -8,10 +8,12 @@ using BookStore.Contracts;
 public class BooksController : ControllerBase
 {
     private readonly IBookService _bookService;
+    private readonly ILogger<BooksController> _logger;
 
-    public BooksController(IBookService bookService)
+    public BooksController(IBookService bookService, ILogger<BooksController> logger)
     {
         _bookService = bookService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -23,10 +25,12 @@ public class BooksController : ControllerBase
             return Ok(response);
     }
 
-    [HttpGet("category/{category}")]
-    public async Task<IActionResult> GetBooksByCategory(string category, CancellationToken cancellationToken)
+    [HttpGet("category")]
+    public async Task<IActionResult> GetBooksByCategory([FromQuery] List<string> categories, CancellationToken cancellationToken)
     {
-        var response = await _bookService.GetByCategoryAsync(category, cancellationToken);
+
+    _logger.LogInformation("Received categories: " + string.Join(", ", categories)); 
+        var response = await _bookService.GetByCategoryAsync(categories, cancellationToken);
 
         if (response.Status == 200) return Ok(response);
         if (response.Status == 404) return NotFound(response);
@@ -101,10 +105,27 @@ public class BooksController : ControllerBase
         var response = await _bookService.DeleteBookAsync(id, cancellationToken);
 
         if (response.Status == 200) return Ok(response);
+        if (response.Status == 401) return Unauthorized(response);
         if (response.Status == 404) return NotFound(response);
         else
         {
             return StatusCode(500, response);
         }
     }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchBooks([FromQuery] string searchTerm, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation($"Search term received: {searchTerm}");
+
+        var response = await _bookService.SearchBooksAsync(searchTerm, cancellationToken);
+
+        if (response.Status == 200) return Ok(response);
+        if (response.Status == 404) return NotFound(response);
+        else
+        {
+            return StatusCode(500, response);
+        }
+    }
+
 }

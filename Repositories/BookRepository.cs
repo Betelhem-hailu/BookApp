@@ -53,17 +53,29 @@ public class BookRepository : IBookRepository
     //Get list of books from database
     public async Task<IEnumerable<Book>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _context.Books.ToListAsync(cancellationToken);
+        return await _context.Books
+        .Include(b => b.Categories)
+        .ToListAsync(cancellationToken);
     }
 
     //Get list of Books by category
-    public async Task<IEnumerable<Book>> GetBooksByCategoryAsync(string category, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Book>> GetBooksByCategoryAsync(List<string> categories, CancellationToken cancellationToken)
     {
-        // Assuming you're using Entity Framework or similar ORM
+         // If no categories are passed, return all books
+    if (categories == null || !categories.Any())
+    {
         return await _context.Books
-                        .Where(b => b.Categories
-                                    .Any(c => c.Name == category))
-                        .ToListAsync(cancellationToken);
+        .Include(b => b.Categories)
+        .ToListAsync(cancellationToken);
+    }
+
+    categories = categories.Select(c => c.Trim().ToLower()).ToList();
+    // Filter books by the provided list of categories
+    var books = await _context.Books
+                     .Include(b => b.Categories)
+        .Where(b => b.Categories.Any(c => categories.Contains(c.Name)))
+        .ToListAsync(cancellationToken);
+    return books;
     }
 
     //Get Book by Id
@@ -87,5 +99,23 @@ public class BookRepository : IBookRepository
             _context.Books.Remove(book);
             await _context.SaveChangesAsync(cancellationToken);   
     }
+
+    public async Task<IEnumerable<Book>> SearchBooksAsync(string searchTerm, CancellationToken cancellationToken)
+{
+    if (string.IsNullOrWhiteSpace(searchTerm))
+    {
+        return Enumerable.Empty<Book>();
+    }
+
+    searchTerm = searchTerm.Trim().ToLower();
+
+    var books = await _context.Books
+        .Where(b => b.Title.ToLower().Contains(searchTerm) || b.Author.ToLower().Contains(searchTerm))
+        .Include(b => b.Categories) // Optionally include categories
+        .ToListAsync(cancellationToken);
+
+    return books;
+}
+
 
 }
