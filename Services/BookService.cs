@@ -180,7 +180,7 @@ public async Task<Response> GetByIdAsync(Guid id, CancellationToken cancellation
         }
 
         var bookDto = _mapper.Map<BookResponseDTO>(book);
-        return new Response("Book retrieved successfully", 200, bookDto);
+        return new Response("Book retrieved successfully", 200, bookDto, book);
     }
     catch (Exception ex)
     {

@@ -97,5 +97,17 @@ public static class ServiceExtensions
     {
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
     }
+
+//     public void ConfigureSessions(this IServiceCollection services)
+// {
+//     services.AddDistributedMemoryCache();
+//     services.AddSession(options =>
+//     {
+//         options.IdleTimeout = TimeSpan.FromMinutes(30); // Adjust as needed
+//         options.Cookie.HttpOnly = true;
+//         options.Cookie.IsEssential = true;
+//     });
+// }
+
 }
 }

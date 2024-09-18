@@ -12,6 +12,7 @@ public static class RepositoryExtensions
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         // Add other repositories here
     }
 }

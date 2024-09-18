@@ -2,6 +2,9 @@ using AutoMapper;
 using BookStore.Contracts;
 using BookStore.Models;
 using BookStore.DTOs;
+using BookStore.HandleResponse;
+using BookStore.Services.Interfaces;
+using BookStore.Data.Cart;
 
 namespace BookStore.Mapping
 {
@@ -19,6 +22,10 @@ namespace BookStore.Mapping
             .ForMember(dest => dest.BookId, opt => opt.Ignore());
 
             CreateMap<Category, CategoryResponseDTO>();
+            CreateMap<Order, OrderResponseDTO>().ReverseMap();
+
+            CreateMap<ShoppingCart, ShoppingCartDTO>();
+
         }
     }
 }

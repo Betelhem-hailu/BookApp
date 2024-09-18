@@ -15,12 +15,12 @@ namespace BookStore.EntitiesConfiguration
             builder.Property(o => o.OrderDate)
                 .IsRequired();
 
-            // Configure the relationship with User
+               // Configure the relationship with User
             builder
-                .HasOne(o => o.User)
-                .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.UserId)
-                .OnDelete(DeleteBehavior.Cascade);          
+                .HasOne<User>() // Specify that an Order has one User
+                .WithMany(u => u.Orders) // A User can have many Orders
+                .HasForeignKey(o => o.UserId) // Use UserId as the foreign key
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configure the relationship with OrderItem
             builder

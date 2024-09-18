@@ -100,5 +100,17 @@ public class AuthService : IAuthService
 
         return BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword);
     }
+
+    public User GetByIdAsync(Guid id)
+    {
+            var user = _userRepository.GetUserById(id);
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user;
+
+    }
 }
 }

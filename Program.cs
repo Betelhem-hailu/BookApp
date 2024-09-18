@@ -15,6 +15,14 @@ var configuration = builder.Configuration;
 
 services.AddLogging(builder => builder.AddConsole());
 builder.Services.AddAutoMapper(typeof(BookMapper));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(30); // Adjust as needed
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -66,6 +74,13 @@ services.ConfigureRepositories();
 services.ConfigureBusinessServices();
 ServiceExtensions.ConfigureCloudinary(services, configuration);
 
+// public void ConfigureServices(IServiceCollection services)
+// {
+ 
+
+//     services.AddControllersWithViews();
+// }
+
 
 var app = builder.Build();
 
@@ -81,6 +96,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseSession();
 app.UseRouting();
 
 app.UseCors("AllowReactApp");
